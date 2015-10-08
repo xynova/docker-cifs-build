@@ -2,11 +2,18 @@
 
 The Dockerfiles in this repository provide an automated build for the mount.cifs binary to enable Azure File Store mounts on package-manager-less distributions like [CoreOS](https://coreos.com).
 
-Pull and Run the **quay.io/xynova/cifs-mount** image (docker pull quay.io/xynova/cifs-mount) and then copy mount.cifs (/sbin/mount.cifs) binary onto the host. You can then use that to provide cifs enabled volumes for other containers. 
+Run the **quay.io/xynova/cifs-mount** container to get a copy of the mount.cifs binary onto the host. This can then be used to provide cifs enabled volumes for other containers. 
 
 ````
+# Get mount.cifs binary into /opt/bin 
+docker run --rm -v /opt/bin:/tmp/dir \
+quay.io/xynova/cifs-mount sh -c "cp /sbin/mount.cifs /tmp/dir/"
+
+# Mount an Azure File Share
 mkdir /mnt/azureshare
-/tmp/test/mount.cifs -o vers=2.1,username=xxx,password=xxx,dir_mode=0777,file_mode=0777 //xxx.file.core.windows.net/sharexxx /mnt/azureshare
+/opt/bin/mount.cifs \
+-o vers=2.1,username=xxx,password=xxx,dir_mode=0777,file_mode=0777 \
+ //xxx.file.core.windows.net/sharexxx /mnt/azureshare
 ````
 
 Get more info on how to mount the FS at the  [MS Azure's website](https://azure.microsoft.com/en-us/documentation/articles/storage-how-to-use-files-linux/)
