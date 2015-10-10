@@ -1,0 +1,23 @@
+[Unit]
+Description=Download basic mount.cifs binary
+Documentation=https://github.com/xynova/docker-cifs-build
+After=network.target
+ConditionFileIsExecutable=!/opt/bin/mount.cifs
+
+[Service]
+TimeoutStartSec=0
+Environment="WORKDIR=/tmp/cifs-mount"
+Environment="BINDIR=/opt/bin"
+Environment="PKGADDR=quay.io/xynova/cifs-mount"
+ExecStartPre=/bin/mkdir -p $BINDIR $WORKDIR
+#Download container
+ExecStartPre=/bin/curl -o ${WORKDIR}/pkg -L https://xynova+reader:SFZ78VTCO2TNUL6NHTBAWZBU68U1LPCT7EQ26B1ID6MIP3FZOFYRLXSF331WEQT4@quay.io/c1/squash/xynova/cifs-mount/latest
+# Manually extract mount.cifs from container into /opt/bin
+ExecStartPre=/bin/bash -c "cd $WORKDIR && tar -ztf pkg | grep .tar \
+| xargs tar -zxvf pkg $1 \
+| xargs tar -xv sbin/mount.cifs -f $1"
+ExecStart=/bin/bash -c "cp ${WORKDIR}/sbin/mount.cifs ${BINDIR}/  && rm -Rf $WORKDIR"
+
+[Install]
+WantedBy=multi-user.target
+RequiredBy=docker.service
