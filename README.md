@@ -1,4 +1,4 @@
-# Samba cifs binary Docker build
+# Samba cifs binary build for Azure Files on CoreOS
 
 The Dockerfiles in this repository are part of an automated build for the Samba mount.cifs binary to enable [Azure File Store mounts](https://azure.microsoft.com/en-us/blog/azure-file-storage-now-generally-available/) on package-manager-less distributions like [CoreOS](https://coreos.com).
 
